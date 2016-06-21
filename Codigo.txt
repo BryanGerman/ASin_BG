@@ -1,0 +1,15 @@
+/*int main(){
+
+    int hola;
+    float x,y; //Hola
+    printf("Escribe el primer número");
+    scanf("%lf",&x);
+    printf("Escribe el segundo número");
+    scanf("%lf",&y);
+	192.168.1.1
+
+    if(x>y) printf("El mayor es %f",x);
+    else if(y>x) printf("El mayor es %f",y);
+    else printf("Son iguales");
+
+}*/
