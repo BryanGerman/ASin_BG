@@ -24,7 +24,6 @@ if|then|else|while|do|input|output|return 			return Palabra_reservada;
 
 "="		return IGUAL;
 
-":"		return dospuntos;
 
 ","|"("|")"|"["|"]"|"{"|"}"|"+"|"-"|"*"|"/"|"<"|">"|"!"|"%"|"&"|"$" {return Operador;}
 
