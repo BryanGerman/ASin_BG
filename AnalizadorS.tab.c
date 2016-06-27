@@ -67,8 +67,10 @@
     #include <stdio.h> 
     int yylex(void); 
     void yyerror(char *); 
+	extern FILE *yyin;
+	extern FILE *salida;
 
-#line 72 "AnalizadorS.tab.c" /* yacc.c:339  */
+#line 74 "AnalizadorS.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -136,7 +138,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 140 "AnalizadorS.tab.c" /* yacc.c:358  */
+#line 142 "AnalizadorS.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -435,8 +437,8 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    52,    52,    53,    54,    57,    60,    61,    63,    64,
-      65,    66,    67,    72,    75,    76,    79
+       0,    54,    54,    55,    56,    59,    62,    63,    65,    66,
+      67,    68,    69,    74,    77,    78,    81
 };
 #endif
 
@@ -1217,8 +1219,14 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-      
-#line 1222 "AnalizadorS.tab.c" /* yacc.c:1646  */
+        case 6:
+#line 62 "AnalizadorS.y" /* yacc.c:1646  */
+    {fprintf(salida,"hola");}
+#line 1226 "AnalizadorS.tab.c" /* yacc.c:1646  */
+    break;
+
+
+#line 1230 "AnalizadorS.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1446,12 +1454,14 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 82 "AnalizadorS.y" /* yacc.c:1906  */
+#line 84 "AnalizadorS.y" /* yacc.c:1906  */
  
 void yyerror(char *s) { 
     fprintf(stderr, "%s\n", s); 
 } 
 int main(void) { 
+	yyin = fopen( "Codigo.txt", "r" );
+	salida = fopen("output.txt","w");
     yyparse(); 
     return 0; 
 } 

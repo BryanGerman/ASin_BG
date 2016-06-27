@@ -2,6 +2,8 @@
     #include <stdio.h> 
     int yylex(void); 
     void yyerror(char *); 
+	extern FILE *yyin;
+	extern FILE *salida;
 %} 
 /*%token Lit_int
 %token IGUAL
@@ -57,7 +59,7 @@ expr:
 	Identificador IGUAL valor
 	;
 asignacionglobal:
-TipoDato ASIGNACION Identificador PUNTOCOM 
+TipoDato ASIGNACION Identificador PUNTOCOM  	{fprintf(salida,"hola");}
 |asignacionLocal PUNTOCOM
 ;
 valor: Lit_int 
@@ -84,6 +86,8 @@ void yyerror(char *s) {
     fprintf(stderr, "%s\n", s); 
 } 
 int main(void) { 
+	yyin = fopen( "Codigo.txt", "r" );
+	salida = fopen("output.txt","w");
     yyparse(); 
     return 0; 
 } 

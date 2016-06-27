@@ -15,31 +15,32 @@ CHAR  [a-z|0-9]
 	++num_caracteres;
 }
 
-int|float|bool|char|string					return TipoDato;
+int|float|bool|char|string									return TipoDato;
 
-if|then|else|while|do|input|output|return 			return Palabra_reservada;
+if|then|else|while|do|input|output|return 						return Palabra_reservada;
 
-{ID}        {	yylval = *yytext;
-		return Identificador;}
+{ID}	        {	yylval = *yytext;						return Identificador;}
 
-"="		return IGUAL;
+"="											return IGUAL;
 
+":"											return ASIGNACION;
 
-","|"("|")"|"["|"]"|"{"|"}"|"+"|"-"|"*"|"/"|"<"|">"|"!"|"%"|"&"|"$" {return Operador;}
+","											return SEPARADOR;
 
-"<="|">="|"=="|"!="|"&&"|"||"  {return Opcompuesto;}
+","|"("|")"|"["|"]"|"{"|"}"|"+"|"-"|"*"|"/"|"<"|">"|"!"|"%"|"&"|"$" 			{return Operador;}
 
-{DIGITO}*|"-"{DIGITO}* { 	yylval = atoi(yytext); 
-				return Lit_int;}
+"<="|">="|"=="|"!="|"&&"|"||"  								{return Opcompuesto;}
+
+{DIGITO}*|"-"{DIGITO}* { 	yylval = atoi(yytext); 					return Lit_int;}
 
 {DIGITO}*",""0"+|{DIGITO}*","{DIGITO}+|"-"{DIGITO}*",""0"+|"-"{DIGITO}*","{DIGITO}+  { 		yylval = atoi(yytext); 
 												return Lit_float;}
 
-true|false|TRUE|FALSE	{ return Lit_bool;}
+true|false|TRUE|FALSE									{ return Lit_bool;}
 
-"'"[a-z|A-Z|0-9]"'"  {return Lit_char;}
+"'"[a-z|A-Z|0-9]"'" 									{return Lit_char;}
 
-"\""[^\n]*"\"" {return Lit_String;}
+"\""[^\n]*"\"" 										{return Lit_String;}
 
 "/""*"[^·]*"*""/"
 
@@ -50,7 +51,7 @@ true|false|TRUE|FALSE	{ return Lit_bool;}
 
 
 .       {    
-	fprintf(salida, "Error en la línea: %d    %s\n",num_caracteres, yytext );
+	fprintf(stderr, "Error en la línea: %d    %s\n",num_caracteres, yytext );
 }
 
 
@@ -60,7 +61,6 @@ true|false|TRUE|FALSE	{ return Lit_bool;}
 
 
 int yywrap(void) { 
-	 yyin = fopen( "Codigo.txt", "r" );
-	salida = fopen("CodigoTokenClasses.txt","w");
+	 
     return 1; 
 }
