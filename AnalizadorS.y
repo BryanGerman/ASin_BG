@@ -9,7 +9,8 @@
 %token Identificador
 %token Operador
 %token Opcompuesto
-
+%token dospuntos
+%token TipoDato
 %token Lit_float
 %token Lit_bool
 %token Lit_char
@@ -18,9 +19,15 @@
 
 
 %% 
+
+
 expr: 
-        Identificador IGUAL Lit_int          {printf("Correcto");}
+	TipoDato Identificador    {printf("TipoDato : Identificador");}
+        | Identificador IGUAL valor         {printf("Identificador IGUAL %s", yytext);}
         ; 
+
+valor:  Lit_int			{printf("Lit_int");}
+	|Lit_float		{printf("Lit_float");}
 
 
 %% 

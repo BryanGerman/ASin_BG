@@ -3,24 +3,31 @@
     int yylex(void); 
     void yyerror(char *); 
 %} 
-
-
+%token Lit_int
+%token IGUAL
 %token Palabra_reservada
 %token Identificador
 %token Operador
 %token Opcompuesto
-%token Lit_int
+%token dospuntos
+%token TipoDato
 %token Lit_float
 %token Lit_bool
 %token Lit_char
 %token Lit_String
-%token IGUAL
+
 
 
 %% 
+
+
 expr: 
-        Identificador IGUAL Lit_int          {printf("Correcto");}
+	TipoDato Identificador    {printf("TipoDato : Identificador");}
+        | Identificador IGUAL valor         {printf("Identificador IGUAL %s", $3);}
         ; 
+
+valor:  Lit_int			{printf("Lit_int");}
+	|Lit_float		{printf("Lit_float");}
 
 
 %% 

@@ -15,33 +15,32 @@ CHAR  [a-z|0-9]
 	++num_caracteres;
 }
 
-int|float|bool|char|string|if|then|else|while|do|input|output|return {
-	    fprintf(salida," Palabra_reservada ");
-	    }
+int|float|bool|char|string					return TipoDato;
 
-{ID}        {
-		
-		fprintf( salida," Identificador ");
+if|then|else|while|do|input|output|return 			return Palabra_reservada;
+
+{ID}        {	yylval = *yytext;
 		return Identificador;}
 
 "="		return IGUAL;
 
-","|":"|"("|")"|"["|"]"|"{"|"}"|"+"|"-"|"*"|"/"|"<"|">"|"!"|"%"|"&"|"$" {fprintf( salida," Operador ");}
+":"		return dospuntos;
 
-"<="|">="|"=="|"!="|"&&"|"||"  {fprintf(salida," Opcompuesto ");}
+","|"("|")"|"["|"]"|"{"|"}"|"+"|"-"|"*"|"/"|"<"|">"|"!"|"%"|"&"|"$" {return Operador;}
 
-{DIGITO}*|"-"{DIGITO}* { 
-					
-			fprintf(salida," Lit_int ");
-			return Lit_int;	}
+"<="|">="|"=="|"!="|"&&"|"||"  {return Opcompuesto;}
 
-{DIGITO}*",""0"+|{DIGITO}*","{DIGITO}+|"-"{DIGITO}*",""0"+|"-"{DIGITO}*","{DIGITO}+  { fprintf(salida," Lit_float ");}
+{DIGITO}*|"-"{DIGITO}* { 	yylval = atoi(yytext); 
+				return Lit_int;}
 
-true|false|TRUE|FALSE	{ fprintf(salida,"Lit_bool ");}
+{DIGITO}*",""0"+|{DIGITO}*","{DIGITO}+|"-"{DIGITO}*",""0"+|"-"{DIGITO}*","{DIGITO}+  { 		yylval = atoi(yytext); 
+												return Lit_float;}
 
-"'"[a-z|A-Z|0-9]"'"  {fprintf (salida,"Lit_char ");}
+true|false|TRUE|FALSE	{ return Lit_bool;}
 
-"\""[^\n]*"\"" {fprintf(salida,"Lit_String");}
+"'"[a-z|A-Z|0-9]"'"  {return Lit_char;}
+
+"\""[^\n]*"\"" {return Lit_String;}
 
 "/""*"[^·]*"*""/"
 
@@ -49,7 +48,7 @@ true|false|TRUE|FALSE	{ fprintf(salida,"Lit_bool ");}
 
 [ \t]+ 
 
-";"	fprintf(salida, "\n");
+
 
 .       {    
 	fprintf(salida, "Error en la línea: %d    %s\n",num_caracteres, yytext );

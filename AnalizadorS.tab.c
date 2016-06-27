@@ -109,10 +109,12 @@ extern int yydebug;
     Identificador = 261,
     Operador = 262,
     Opcompuesto = 263,
-    Lit_float = 264,
-    Lit_bool = 265,
-    Lit_char = 266,
-    Lit_String = 267
+    dospuntos = 264,
+    TipoDato = 265,
+    Lit_float = 266,
+    Lit_bool = 267,
+    Lit_char = 268,
+    Lit_String = 269
   };
 #endif
 
@@ -132,7 +134,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 136 "AnalizadorS.tab.c" /* yacc.c:358  */
+#line 138 "AnalizadorS.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -372,23 +374,23 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  4
+#define YYFINAL  6
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   3
+#define YYLAST   8
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  13
+#define YYNTOKENS  15
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  2
+#define YYNNTS  3
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  2
+#define YYNRULES  5
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  6
+#define YYNSTATES  10
 
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   267
+#define YYMAXUTOK   269
 
 #define YYTRANSLATE(YYX)                                                \
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -423,14 +425,14 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8,     9,    10,    11,    12
+       5,     6,     7,     8,     9,    10,    11,    12,    13,    14
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    22,    22
+       0,    25,    25,    26,    29,    30
 };
 #endif
 
@@ -440,8 +442,9 @@ static const yytype_uint8 yyrline[] =
 static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "Lit_int", "IGUAL", "Palabra_reservada",
-  "Identificador", "Operador", "Opcompuesto", "Lit_float", "Lit_bool",
-  "Lit_char", "Lit_String", "$accept", "expr", YY_NULLPTR
+  "Identificador", "Operador", "Opcompuesto", "dospuntos", "TipoDato",
+  "Lit_float", "Lit_bool", "Lit_char", "Lit_String", "$accept", "expr",
+  "valor", YY_NULLPTR
 };
 #endif
 
@@ -451,14 +454,14 @@ static const char *const yytname[] =
 static const yytype_uint16 yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267
+     265,   266,   267,   268,   269
 };
 # endif
 
-#define YYPACT_NINF -7
+#define YYPACT_NINF -6
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-7)))
+  (!!((Yystate) == (-6)))
 
 #define YYTABLE_NINF -1
 
@@ -469,7 +472,7 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -6,    -3,     2,     0,    -7,    -7
+      -5,    -2,     0,     3,    -3,    -6,    -6,    -6,    -6,    -6
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -477,19 +480,19 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       0,     0,     0,     0,     1,     2
+       0,     0,     0,     0,     0,     2,     1,     4,     5,     3
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -7,    -7
+      -6,    -6,    -6
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     2
+      -1,     3,     9
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -497,31 +500,31 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-       1,     3,     4,     5
+       7,     1,     4,     6,     0,     2,     5,     0,     8
 };
 
-static const yytype_uint8 yycheck[] =
+static const yytype_int8 yycheck[] =
 {
-       6,     4,     0,     3
+       3,     6,     4,     0,    -1,    10,     6,    -1,    11
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     6,    14,     4,     0,     3
+       0,     6,    10,    16,     4,     6,     0,     3,    11,    17
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    13,    14
+       0,    15,    16,    16,    17,    17
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     3
+       0,     2,     2,     3,     1,     1
 };
 
 
@@ -1198,13 +1201,31 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 22 "AnalizadorS.y" /* yacc.c:1646  */
-    {printf("Correcto");}
-#line 1204 "AnalizadorS.tab.c" /* yacc.c:1646  */
+#line 25 "AnalizadorS.y" /* yacc.c:1646  */
+    {printf("TipoDato : Identificador");}
+#line 1207 "AnalizadorS.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 3:
+#line 26 "AnalizadorS.y" /* yacc.c:1646  */
+    {printf("Identificador IGUAL %s", yytext);}
+#line 1213 "AnalizadorS.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 4:
+#line 29 "AnalizadorS.y" /* yacc.c:1646  */
+    {printf("Lit_int");}
+#line 1219 "AnalizadorS.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 5:
+#line 30 "AnalizadorS.y" /* yacc.c:1646  */
+    {printf("Lit_float");}
+#line 1225 "AnalizadorS.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1208 "AnalizadorS.tab.c" /* yacc.c:1646  */
+#line 1229 "AnalizadorS.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1432,7 +1453,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 26 "AnalizadorS.y" /* yacc.c:1906  */
+#line 33 "AnalizadorS.y" /* yacc.c:1906  */
  
 void yyerror(char *s) { 
     fprintf(stderr, "%s\n", s); 

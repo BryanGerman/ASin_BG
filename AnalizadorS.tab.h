@@ -51,10 +51,12 @@ extern int yydebug;
     Identificador = 261,
     Operador = 262,
     Opcompuesto = 263,
-    Lit_float = 264,
-    Lit_bool = 265,
-    Lit_char = 266,
-    Lit_String = 267
+    dospuntos = 264,
+    TipoDato = 265,
+    Lit_float = 266,
+    Lit_bool = 267,
+    Lit_char = 268,
+    Lit_String = 269
   };
 #endif
 
