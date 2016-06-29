@@ -2,3 +2,4 @@
 bison -d AnalizadorS.y
 flex AnalizadorS.l
 gcc -o AnalizadorS lex.yy.c AnalizadorS.tab.c
+./AnalizadorS

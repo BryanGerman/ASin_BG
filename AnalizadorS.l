@@ -1,66 +1,46 @@
 %{
-#include <stdlib.h> 
-void yyerror(char *); 
-#include "AnalizadorS.tab.h" 
-int num_lineas = 0, num_caracteres = 0;
-FILE * salida;
+#include <stdlib.h>
+void yyerror(char *);
+#include "AnalizadorS.tab.h"
 %}
-ID       [a-z][a-z|A-Z|0-9]*
+ID [a-z][a-z|A-Z|0-9]*
 DIGITO [0-9]
-CHAR  [a-z|0-9]
-
-
+CHAR [a-z|0-9]
 %%
-\n {	++num_lineas;
-	++num_caracteres;
-}
-
-int|float|bool|char|string									return TipoDato;
-
-if|then|else|while|do|input|output|return 						return Palabra_reservada;
-
-{ID}	        {	yylval = *yytext;						return Identificador;}
-
-"="											return IGUAL;
-
-":"											return ASIGNACION;
-
-","											return SEPARADOR;
-
-","|"("|")"|"["|"]"|"{"|"}"|"+"|"-"|"*"|"/"|"<"|">"|"!"|"%"|"&"|"$" 			{return Operador;}
-
-"<="|">="|"=="|"!="|"&&"|"||"  								{return Opcompuesto;}
-
-{DIGITO}*|"-"{DIGITO}* { 	yylval = atoi(yytext); 					return Lit_int;}
-
-{DIGITO}*",""0"+|{DIGITO}*","{DIGITO}+|"-"{DIGITO}*",""0"+|"-"{DIGITO}*","{DIGITO}+  { 		yylval = atoi(yytext); 
-												return Lit_float;}
-
-true|false|TRUE|FALSE									{ return Lit_bool;}
-
-"'"[a-z|A-Z|0-9]"'" 									{return Lit_char;}
-
-"\""[^\n]*"\"" 										{return Lit_String;}
-
+int|float|bool|char|string 							return TipoDato;
+"if"										return IF;
+"then"										return THEN;
+"else"										return ELSE;
+"while"										return WHILE;
+"do"										return DO;
+"input"										return INPUT;
+"output"									return OUTPUT;
+"return"									return RETURN;
+{ID}						 				return Identificador;
+"=" 										return IGUAL;
+":"										return ASIGNACION;
+","										return SEPARADOR;
+"+"|"-"|"*"|"%"|"/"								return OP;
+"|"|"&"										return OPLog;	
+"<"|">"|"<="|">="|"=="|"!="		 					return OpControl;
+"&&"|"||"									return OpLogControl;
+"("										return AGRPAR_AB;
+")"										return AGRPAR_CE;
+"{"										return AGRLLAV_AB;
+"}"										return AGRLLAV_CE;
+"["										return AGRCOR_AB;
+"]"										return AGRCOR_CE;
+{DIGITO}+									return ENTERO;
+"-"{DIGITO}+									return ENTERO_NEG;
+{DIGITO}*",""0"+|{DIGITO}*","{DIGITO}+|"-"{DIGITO}*",""0"+|"-"{DIGITO}*","{DIGITO}+ return Lit_float;
+true|false|TRUE|FALSE 								return Lit_bool;
+"'"[a-z|A-Z|0-9]"'" 								return Lit_char;
+"\""[^\n]*"\"" 									return Lit_String;
+";" 										return PUNTOCOM;
 "/""*"[^·]*"*""/"
-
 "\/""\/"[^}\n]*
-
-[ \t]+ 
-
-
-
-.       {    
-	fprintf(stderr, "Error en la línea: %d    %s\n",num_caracteres, yytext );
-}
-
-
-
-
+[ \t]+
 %%
-
-
 int yywrap(void) { 
-	 
     return 1; 
 }

@@ -1,1 +1,1 @@
-int:hola;
+a=a+b+'c'+'d'
