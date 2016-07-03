@@ -2,8 +2,11 @@
 #include <stdio.h>
 int yylex(void);
 void yyerror(char *);
+extern char* yytext;
+extern int yylval;
 extern FILE* yyin;
 extern FILE* yyout;
+extern char* yycopy;
 int errors;
 %}
 %token Lit_int
@@ -43,76 +46,106 @@ int errors;
 
 %%
 prog: 
-		prog atribucion
-		|prog asignacionglobal
+		prog asignacionglobal
 		|prog funcion
-		|prog if
-		|prog while
-		|prog asignacionLocal
 		|
 		;
 
 asignacionglobal:
-		TipoDato ASIGNACION Identificador {fprintf(yyout,"Asignacion Global");}
-		|TipoDato 
-		|error {errors++;}
+		TipoDato ASIGNACION Identificador {fprintf(yyout," AsignacionGlobal ");}
 		;
 funcion:
-		TipoDato Identificador ASIGNACION stackAsig bloqueComandos		{fprintf(yyout,"funcion");}
-		|TipoDato Identificador ASIGNACION AGRPAR_AB  AGRPAR_CE bloqueComandos  {fprintf(yyout,"funcion");}
-		|TipoDato tamaVector IGUAL valor					{fprintf(yyout,"funcion");}
+		TipoDato Identificador ASIGNACION stackAsig AGRLLAV_AB bloqueComandosFunciones RETURN Identificador AGRLLAV_CE	{fprintf(yyout," funcion ");}
+		|TipoDato Identificador ASIGNACION AGRPAR_AB  AGRPAR_CE AGRLLAV_AB bloqueComandosFunciones RETURN Identificador AGRLLAV_CE  {fprintf(yyout," funcion ");}
+		|TipoDato tamaVector Identificador AGRPAR_AB  AGRPAR_CE AGRLLAV_AB bloqueComandosFunciones RETURN Identificador AGRLLAV_CE  {fprintf(yyout," funcion ");}
+		|TipoDato tamaVector Identificador stackAsig AGRLLAV_AB bloqueComandosFunciones RETURN Identificador AGRLLAV_CE  {fprintf(yyout," funcion ");}
 		;
-
-
-atribucion:
-		Identificador IGUAL stackOp		{fprintf(yyout,"atribucion");}
-		| Identificador IGUAL valor		{fprintf(yyout,"atribucion");}
-		| Identificador IGUAL Identificador 	{fprintf(yyout,"atribucion");}
-		;
-
 tamaVector: 	
 		AGRCOR_AB ENTERO AGRCOR_CE
 		;
+bloqueComandosFunciones: 
+		stackAsig bloqueComandosFunciones 		{fprintf(yyout," Parte de la funcion ");}
+		|atribucion bloqueComandosFunciones		{fprintf(yyout," Parte de la funcion ");}
+		|asignacionLocal bloqueComandosFunciones	{fprintf(yyout," Parte de la funcion ");}
+		|if bloqueComandosFunciones			{fprintf(yyout," Parte de la funcion ");}
+		|while bloqueComandosFunciones			{fprintf(yyout," Parte de la funcion ");}
+		|stackAsig					{fprintf(yyout," Parte de la funcion ");}
+		|atribucion					{fprintf(yyout," Parte de la funcion ");}
+		|asignacionLocal				{fprintf(yyout," Parte de la funcion ");}
+		|if						{fprintf(yyout," Parte de la funcion ");}
+		|while						{fprintf(yyout," Parte de la funcion ");}
+		|input
+		|output
+		;
 
 if: 
-		IF stackOpLogControl
-		|IF stackOpLogControl THEN bloqueComandos
-		|IF stackOpLogControl THEN bloqueComandos ELSE bloqueComandos
-		|IF stackOpLogControl THEN if
-		|IF stackOpLogControl THEN if ELSE bloqueComandos
+		IF stackOpLogControl				{fprintf(yyout," if ");}
+		|IF stackOpLogControl THEN bloqueComandosIF	{fprintf(yyout," if ");}
+		|IF stackOpLogControl THEN bloqueComandosIF ELSE bloqueComandosIF	{fprintf(yyout," if ");}
+		|IF stackOpLogControl THEN AGRLLAV_AB if AGRLLAV_CE	{fprintf(yyout," if ");}
+		|IF stackOpLogControl THEN AGRLLAV_AB if AGRLLAV_CE ELSE AGRLLAV_AB bloqueComandosIF AGRLLAV_CE {fprintf(yyout," if ");}
+		;
+
+bloqueComandosIF: 
+		AGRLLAV_AB bloqueComandosIF AGRLLAV_CE	{fprintf(yyout," Parte del if ");}
+		|atribucion				{fprintf(yyout," Parte del if ");}
+		|asignacionLocal			{fprintf(yyout," Parte del if ");}
+		|atribucion bloqueComandosIF		{fprintf(yyout," Parte del if ");}
+		|asignacionLocal bloqueComandosIF	{fprintf(yyout," Parte del if ");}
+		|while					{fprintf(yyout," Parte del if ");}
+		|input
+		|output
 		;
 
 while:
-		|WHILE stackOpLogControl DO bloqueComandos
-		|WHILE stackOpLogControl DO while
-		|DO bloqueComandos WHILE stackOpLogControl
-		|DO while WHILE stackOpLogControl
+		WHILE stackOpLogControl DO bloqueComandosWhile	{fprintf(yyout," while ");}
+		|WHILE stackOpLogControl DO while		{fprintf(yyout," while ");}
+		|DO bloqueComandosWhile WHILE stackOpLogControl	{fprintf(yyout," while ");}
+		|DO while WHILE stackOpLogControl		{fprintf(yyout," while ");}
+		|if						{fprintf(yyout," while ");}
 		;
 
 stackOpLogControl: 	
 		AGRPAR_AB stackOpLogControl AGRPAR_CE
 		|Identificador OpControl Identificador
-		|Identificador OpControl valor
+		|Identificador OpControl valorNumerico
+		|Identificador OpControl valorCaracter
 		|Identificador OpControl OperacionArit
 		|AGRPAR_AB stackOpLogControl AGRPAR_CE OpLogControl stackOpLogControl
 		|Identificador OpControl Identificador OpLogControl stackOpLogControl
-		|Identificador OpControl valor OpLogControl stackOpLogControl
+		|Identificador OpControl valorNumerico OpLogControl stackOpLogControl
+		|Identificador OpControl valorCaracter OpLogControl stackOpLogControl
 		|Identificador OpControl OperacionArit OpLogControl stackOpLogControl
-		|AGRPAR_AB stackOpLogControl AGRPAR_CE bloqueComandos
-		|Identificador OpControl Identificador bloqueComandos
-		|Identificador OpControl valor bloqueComandos
-		|Identificador OpControl OperacionArit bloqueComandos
-		|AGRPAR_AB stackOpLogControl AGRPAR_CE OpLogControl stackOpLogControl bloqueComandos
-		|Identificador OpControl Identificador OpLogControl stackOpLogControl bloqueComandos
-		|Identificador OpControl valor OpLogControl stackOpLogControl bloqueComandos
-		|Identificador OpControl OperacionArit OpLogControl stackOpLogControl bloqueComandos
+		|AGRPAR_AB stackOpLogControl AGRPAR_CE bloqueComandosWhile
+		|Identificador OpControl Identificador bloqueComandosWhile
+		|Identificador OpControl valorNumerico bloqueComandosWhile
+		|Identificador OpControl valorCaracter bloqueComandosWhile
+		|Identificador OpControl OperacionArit bloqueComandosWhile
+		|AGRPAR_AB stackOpLogControl AGRPAR_CE OpLogControl stackOpLogControl bloqueComandosWhile
+		|Identificador OpControl Identificador OpLogControl stackOpLogControl bloqueComandosWhile
+		|Identificador OpControl valorNumerico OpLogControl stackOpLogControl bloqueComandosWhile
+		|Identificador OpControl valorCaracter OpLogControl stackOpLogControl bloqueComandosWhile
+		|Identificador OpControl OperacionArit OpLogControl stackOpLogControl bloqueComandosWhile
+		;
+bloqueComandosWhile: 
+		AGRLLAV_AB bloqueComandosWhile AGRLLAV_CE 	{fprintf(yyout," Parte del while ");}
+		|atribucion					{fprintf(yyout," Parte del while ");}
+		|asignacionLocal				{fprintf(yyout," Parte del while ");}
+		|atribucion bloqueComandosWhile			{fprintf(yyout," Parte del while ");}
+		|asignacionLocal bloqueComandosWhile		{fprintf(yyout," Parte del while ");}
+		|if						{fprintf(yyout," Parte del while ");}
+		|input
+		|output
 		;
 
-bloqueComandos: 
-		AGRLLAV_AB AGRLLAV_CE
-		|AGRLLAV_AB asignacionLocal AGRLLAV_CE
-		|AGRLLAV_AB atribucion AGRLLAV_CE
-		|stackAsig
+atribucion:
+		Identificador IGUAL stackOp		{fprintf(yyout," atribucion");}
+		| Identificador IGUAL valorNumerico	{fprintf(yyout," atribucion");}
+		| Identificador IGUAL valorCaracter	{fprintf(yyout," atribucion ");}
+		| Identificador IGUAL Identificador 	{fprintf(yyout," atribucion ");}
+		| Identificador AGRCOR_AB ENTERO AGRCOR_CE IGUAL valorNumerico {fprintf(yyout," atribucion ");}
+		| Identificador AGRCOR_AB ENTERO AGRCOR_CE IGUAL valorCaracter {fprintf(yyout," atribucion ");}
+		| Identificador AGRCOR_AB ENTERO AGRCOR_CE IGUAL Identificador AGRCOR_AB ENTERO AGRCOR_CE {fprintf(yyout," atribucion ");}
 		;
 
 stackAsig: 	
@@ -126,18 +159,18 @@ stackOp:
 		;
 
 OperacionArit:
-		Identificador OP valor 
-		|valor OP valor	
-		|Identificador OP Identificador	
-		|Identificador OP OperacionArit
-		|valor OP OperacionArit
+		Identificador OP valorNumerico 		{fprintf(yyout," Operacion aritmetica ");}
+		|valorNumerico OP valorNumerico		{fprintf(yyout," Operacion aritmetica ");}
+		|Identificador OP Identificador		{fprintf(yyout," Operacion aritmetica ");}
+		|Identificador OP OperacionArit		{fprintf(yyout," Operacion aritmetica ");}
+		|valorNumerico OP OperacionArit		{fprintf(yyout," Operacion aritmetica ");}
 		;
 OperacionLog:
-		Identificador OPLog valor 
-		|valor OPLog valor	
+		Identificador OPLog valorNumerico 
+		|valorNumerico OPLog valorNumerico	
 		|Identificador OPLog Identificador
 		|Identificador OPLog OperacionLog
-		|valor OPLog OperacionLog
+		|valorNumerico OPLog OperacionLog
 		;
 
 lista:
@@ -148,13 +181,22 @@ lista:
 asignacionLocal:
 		TipoDato ASIGNACION Identificador PUNTOCOM {fprintf(yyout,"asignacionLocal");}
 		;
-valor: 
+valorNumerico: 
 		ENTERO_NEG
 		|ENTERO
 		|Lit_float 
-		|Lit_char
+		;
+valorCaracter:
+		Lit_char
 		|Lit_bool
 		|Lit_String
+		;
+
+input:
+		INPUT AGRPAR_AB Lit_String AGRPAR_CE	{fprintf(yyout," printf ");}
+		;
+output:
+		OUTPUT AGRPAR_AB Lit_String SEPARADOR Identificador AGRPAR_CE {fprintf(yyout," scanf ");}
 		;
 
 		
