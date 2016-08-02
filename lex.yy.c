@@ -823,7 +823,7 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 11 "AnalizadorS.l"
-return TipoDato;
+yylval.tipo=strdup(yytext);		return TipoDato;
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
@@ -868,7 +868,7 @@ return RETURN;
 case 10:
 YY_RULE_SETUP
 #line 20 "AnalizadorS.l"
-return Identificador;
+yylval.identificador=strdup(yytext);	return Identificador;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
@@ -938,17 +938,17 @@ return AGRCOR_CE;
 case 24:
 YY_RULE_SETUP
 #line 34 "AnalizadorS.l"
-yylval = atoi(yytext); 			return ENTERO;
+yylval.entero = atoi(yytext);		return ENTERO;
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
 #line 35 "AnalizadorS.l"
-yylval = atoi(yytext); 			return ENTERO_NEG;
+return ENTERO_NEG;
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 36 "AnalizadorS.l"
-yylval = atoi(yytext);  return Lit_float;
+return Lit_float;
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
@@ -958,7 +958,7 @@ return Lit_bool;
 case 28:
 YY_RULE_SETUP
 #line 38 "AnalizadorS.l"
-yylval = atoi(yytext); 			return Lit_char;
+return Lit_char;
 	YY_BREAK
 case 29:
 YY_RULE_SETUP

@@ -3,7 +3,6 @@
 int yylex(void);
 void yyerror(char *);
 extern char* yytext;
-extern int yylval;
 extern FILE* yyin;
 extern FILE* yyout;
 extern char* yycopy;
@@ -59,13 +58,15 @@ prog:
 		;
 
 asignacionglobal:
-		TipoDato ASIGNACION Identificador 
+		TipoDato ASIGNACION Identificador {fprintf(yyout,"%s,%s,0,Asignacion Global",$3,$1);}
 		;
 funcion:
-		TipoDato Identificador ASIGNACION stackAsig AGRLLAV_AB bloqueComandosFunciones RETURN Identificador AGRLLAV_CE	{fprintf(yyout," funcion ");}
-		|TipoDato Identificador ASIGNACION AGRPAR_AB  AGRPAR_CE AGRLLAV_AB bloqueComandosFunciones RETURN Identificador AGRLLAV_CE  {fprintf(yyout," funcion ");}
-		|TipoDato tamaVector Identificador AGRPAR_AB  AGRPAR_CE AGRLLAV_AB bloqueComandosFunciones RETURN Identificador AGRLLAV_CE  {fprintf(yyout," funcion ");}
-		|TipoDato tamaVector Identificador stackAsig AGRLLAV_AB bloqueComandosFunciones RETURN Identificador AGRLLAV_CE  {fprintf(yyout," funcion ");}
+		TipoDato Identificador ASIGNACION stackAsig AGRLLAV_AB bloqueComandosFunciones RETURN Identificador AGRLLAV_CE	
+		|TipoDato Identificador ASIGNACION AGRPAR_AB  AGRPAR_CE AGRLLAV_AB bloqueComandosFunciones RETURN Identificador AGRLLAV_CE {fprintf(yyout,"%s,%s,0,Funcion",$2,$1);}
+		|TipoDato Identificador ASIGNACION AGRPAR_AB  AGRPAR_CE AGRLLAV_AB RETURN Identificador AGRLLAV_CE
+{fprintf(yyout,"%s,%s,0,Funcion",$2,$1);}
+		|TipoDato tamaVector Identificador AGRPAR_AB  AGRPAR_CE AGRLLAV_AB bloqueComandosFunciones RETURN Identificador AGRLLAV_CE 
+		|TipoDato tamaVector Identificador stackAsig AGRLLAV_AB bloqueComandosFunciones RETURN Identificador AGRLLAV_CE  
 		;
 tamaVector: 	
 		AGRCOR_AB ENTERO AGRCOR_CE
@@ -186,7 +187,7 @@ lista:
 		; 
 
 asignacionLocal:
-		TipoDato ASIGNACION Identificador PUNTOCOM  {fprintf(datos,"%s,%s,0,Asignacion Local\n",$3,$1);}
+		TipoDato ASIGNACION Identificador PUNTOCOM  {fprintf(yyout,"%s,%s,0,Asignacion Local",$3,$1);}
 		;
 valorNumerico: 
 		ENTERO_NEG
@@ -212,10 +213,6 @@ output:
 void yyerror(char *s) { 
     fprintf(stderr, "%s\n", s);}
 
-/*int main(void) { 
-    yyparse(); 
-    return 0; 
-} */
 
 int main () {
         yyin = fopen ("Codigo.txt", "r");
