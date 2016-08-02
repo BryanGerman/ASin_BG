@@ -8,7 +8,7 @@ ID [a-z][a-z|A-Z|0-9]*
 DIGITO [0-9]
 CHAR [a-z|0-9]
 %%
-int|float|bool|char|string 							return TipoDato;
+int|float|bool|char|string 		yylval.tipo=strdup(yytext);		return TipoDato;
 "if"										return IF;
 "then"										return THEN;
 "else"										return ELSE;
@@ -17,7 +17,7 @@ int|float|bool|char|string 							return TipoDato;
 "printf"									return INPUT;
 "scanf"										return OUTPUT;
 "return"									return RETURN;
-{ID}						 				return Identificador;
+{ID}					yylval.identificador=strdup(yytext);	return Identificador;
 "=" 										return IGUAL;
 ":"										return ASIGNACION;
 ","										return SEPARADOR;
@@ -31,11 +31,11 @@ int|float|bool|char|string 							return TipoDato;
 "}"										return AGRLLAV_CE;
 "["										return AGRCOR_AB;
 "]"										return AGRCOR_CE;
-{DIGITO}+				yylval = atoi(yytext); 			return ENTERO;
-"-"{DIGITO}+				yylval = atoi(yytext); 			return ENTERO_NEG;
-{DIGITO}*",""0"+|{DIGITO}*","{DIGITO}+|"-"{DIGITO}*",""0"+|"-"{DIGITO}*","{DIGITO}+  yylval = atoi(yytext);  return Lit_float;
+{DIGITO}+				yylval.entero = atoi(yytext);		return ENTERO;
+"-"{DIGITO}+									return ENTERO_NEG;
+{DIGITO}*",""0"+|{DIGITO}*","{DIGITO}+|"-"{DIGITO}*",""0"+|"-"{DIGITO}*","{DIGITO}+  return Lit_float;
 true|false|TRUE|FALSE 								return Lit_bool;
-"'"[a-z|A-Z|0-9]"'"  			yylval = atoi(yytext); 			return Lit_char;
+"'"[a-z|A-Z|0-9]"'"  					 			return Lit_char;
 "\""[^\n]*"\"" 									return Lit_String;
 ";" 										return PUNTOCOM;
 "/""*"[^·]*"*""/"
